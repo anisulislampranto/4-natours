@@ -38,6 +38,7 @@ app.get("/api/v1/tours/:id", (req, res) => {
   //     message: "Invalid Id",
   //   });
   // }
+
   if (!tour) {
     return res.status(404).json({
       status: "failed",
@@ -71,6 +72,22 @@ app.post("/api/v1/tours", (req, res) => {
   );
 
   res.send("data posted");
+});
+
+app.patch("/api/v1/tours/:id", (req, res) => {
+  if (req.params.id > tours.length) {
+    return res.status(404).json({
+      status: "failed",
+      message: "Invalid Id",
+    });
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      tour: "UPDATED TOUR HeRe",
+    },
+  });
 });
 
 app.listen(port, () => {
