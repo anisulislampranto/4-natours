@@ -17,6 +17,22 @@ exports.checkID = (req, res, next, value) => {
   next();
 };
 
+// create a checkBody middleware
+// Check if body containes the name and price property
+// if not, send back 400(bad request)
+// add it to post handler stack
+// middleware to check for name and price
+exports.checkBody = (req, res, next) => {
+  console.log(req.body.name);
+  if (!req.body.name || !req.body.price) {
+    return res.status(400).json({
+      status: "Fail",
+      message: "Missing Name or Price",
+    });
+  }
+  next();
+};
+
 // (2) ROUTE HANDLERS
 exports.getAllTours = (req, res) => {
   res.status(200).json({
@@ -49,10 +65,10 @@ exports.createTour = (req, res) => {
     `${__dirname}/../dev-data/data/tours-simple.json`,
     JSON.stringify(tours),
     (err) => {
+      console.log(err);
       res.status(201).json({ status: "success", data: { tour: newTour } });
     }
   );
-  res.send("data posted");
 };
 
 exports.deleteTour = (req, res) => {
