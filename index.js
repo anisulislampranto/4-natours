@@ -1,17 +1,20 @@
-const express = require("express");
-const morgan = require("morgan");
+const express = require('express');
+const morgan = require('morgan');
 
-const tourRouter = require("./routes/tourRoutes");
-const userRouter = require("./routes/userRoutes");
+const tourRouter = require('./routes/tourRoutes');
+const userRouter = require('./routes/userRoutes');
 
 const app = express();
 
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
+
 // (1) MIDDLEWARE
 app.use(express.json());
-app.use(morgan("dev"));
 // (1.1) CUSTOMIZE MEDDLEWARE
 app.use((req, res, next) => {
-  console.log("this is middlewere");
+  console.log('this is middlewere');
   next();
 });
 app.use((req, res, next) => {
@@ -30,7 +33,7 @@ app.use((req, res, next) => {
 // USERS
 
 // MOUNTING NEW ROUTER FOR A ROUTE || MIDDLEWARE FOR ROUTES
-app.use("/api/v1/tours", tourRouter);
-app.use("/api/v1/users", userRouter);
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 
 module.exports = app;
