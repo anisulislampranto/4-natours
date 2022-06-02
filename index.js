@@ -74,7 +74,7 @@ app.post("/api/v1/tours", (req, res) => {
   res.send("data posted");
 });
 
-app.patch("/api/v1/tours/:id", (req, res) => {
+app.delete("/api/v1/tours/:id", (req, res) => {
   if (req.params.id > tours.length) {
     return res.status(404).json({
       status: "failed",
@@ -82,11 +82,9 @@ app.patch("/api/v1/tours/:id", (req, res) => {
     });
   }
 
-  res.status(200).json({
+  res.status(204).json({
     status: "success",
-    data: {
-      tour: "UPDATED TOUR HeRe",
-    },
+    data: null,
   });
 });
 
