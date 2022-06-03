@@ -23,38 +23,6 @@ mongoose.connect(DB).then((con) => {
   console.log('it is connected');
 });
 
-const tourSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Tour Must Have A Name'],
-    unique: true,
-  },
-  rating: {
-    type: Number,
-    default: 4.5,
-  },
-  price: {
-    type: Number,
-    required: [true, 'Tour Must Have A Price'],
-  },
-});
-
-const Tour = mongoose.model('Tour', tourSchema);
-
-const testTourSchema = new Tour({
-  name: 'The Dark Knight',
-  price: 78,
-});
-
-testTourSchema
-  .save()
-  .then((doc) => {
-    console.log(doc, 'Saved');
-  })
-  .catch((err) => {
-    console.log(err, 'Error');
-  });
-
 app.listen(port, () => {
   console.log(`listening to ${port}`);
 });
