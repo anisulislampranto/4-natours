@@ -41,6 +41,20 @@ const tourSchema = new mongoose.Schema({
 
 const Tour = mongoose.model('Tour', tourSchema);
 
+const testTourSchema = new Tour({
+  name: 'The Dark Knight',
+  price: 78,
+});
+
+testTourSchema
+  .save()
+  .then((doc) => {
+    console.log(doc, 'Saved');
+  })
+  .catch((err) => {
+    console.log(err, 'Error');
+  });
+
 app.listen(port, () => {
   console.log(`listening to ${port}`);
 });
