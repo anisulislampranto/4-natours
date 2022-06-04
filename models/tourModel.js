@@ -50,6 +50,10 @@ const tourSchema = new mongoose.Schema(
     // as we have multiple images so well save it as array
     images: [String],
     startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
     createdAt: {
       type: Date,
       default: Date.now(),
@@ -61,6 +65,11 @@ const tourSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+
+// virtual properties
+tourSchema.virtual('durationWeeks').get(function () {
+  return this.duration / 7;
+});
 
 // document middleware: runs before .save() and .create()
 tourSchema.pre('save', function (next) {
@@ -79,10 +88,27 @@ tourSchema.pre('save', function (next) {
 //   next();
 // });
 
-// virtual properties
-tourSchema.virtual('durationWeeks').get(function () {
-  return this.duration / 7;
+// query middleware: runs before/ after query
+// tourSchema.pre('find', function (next)
+// by using regEx we can use one middleware to specify all the qe
+tourSchema.pre(/^find/, function (next) {
+  this.find({ secretTour: { $ne: true } });
+
+  this.start = Date.now();
+  next();
 });
+
+tourSchema.post(/^find/, function (doc, next) {
+  console.log(`Query Took ${Date.now() - this.start} miliseconds!`);
+  console.log(doc);
+  next();
+});
+
+// findOne
+// tourSchema.pre('findOne', function (next) {
+//   this.find({ secretTour: { $ne: true } });
+//   next();
+// });
 
 const Tour = mongoose.model('Tour', tourSchema);
 
