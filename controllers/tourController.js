@@ -1,10 +1,47 @@
 const { ObjectId } = require('mongodb');
 const Tour = require('../models/tourModel');
 
-// (2) ROUTE HANDLERS
 exports.getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find({});
+    console.log(req.query);
+
+    // build query
+    // (1A) Filtering
+    const queryObj = { ...req.query };
+    const excludedFeilds = ['page', 'sort', 'limit', 'fields'];
+    excludedFeilds.forEach((el) => delete queryObj[el]);
+
+    // (2B) advanced filtering
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    // {difficulty : 'easy', duration: {$gte : 5}}
+    // {difficulty : 'easy', duration: {gte : 5}}
+    // gte, gt, lte, lt
+
+    let query = Tour.find(JSON.parse(queryStr));
+
+    // sort
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      console.log(sortBy);
+      query = query.sort(sortBy);
+      // sort('price ratingAvarage')
+    } else {
+      query = query.sort('-createdAt');
+    }
+
+    // execute query
+    const tours = await query;
+
+    //  mongoose filtering
+    // const query = Tour.find()
+    //   .where('duration')
+    //   .equals(5)
+    //   .where('difficulty')
+    //   .equals('easy');
+
+    // send query
     res.status(200).json({
       status: 'success',
       results: tours.length,
