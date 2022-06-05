@@ -1,9 +1,9 @@
-const fs = require("fs");
+const fs = require('fs');
 
 exports.getAllUsers = (req, res) => {
   console.log(req.requestTime);
   res.status(200).json({
-    status: "success",
+    status: 'success',
     requestedAt: req.requestTime,
     results: tours.length,
     data: {
@@ -24,12 +24,12 @@ exports.getUser = (req, res) => {
   // }
   if (!tour) {
     return res.status(404).json({
-      status: "failed",
-      message: "Invalid Id",
+      status: 'failed',
+      message: 'Invalid Id',
     });
   }
   res.status(200).json({
-    status: "success",
+    status: 'success',
     data: {
       tour,
     },
@@ -45,21 +45,21 @@ exports.createUser = (req, res) => {
     `${__dirname}/../../dev-data/data/tours-simple.json`,
     JSON.stringify(tours),
     (err) => {
-      res.status(201).json({ status: "success", data: { tour: newTour } });
+      res.status(201).json({ status: 'success', data: { tour: newTour } });
     }
   );
-  res.send("data posted");
+  res.send('data posted');
 };
 
 exports.deleteUser = (req, res) => {
   if (req.params.id > tours.length) {
     return res.status(404).json({
-      status: "failed delete",
-      message: "Invalid Id",
+      status: 'failed delete',
+      message: 'Invalid Id',
     });
   }
   res.status(204).json({
-    status: "success",
+    status: 'success',
     data: null,
   });
 };
