@@ -5,13 +5,14 @@ const authController = require('../controllers/authController');
 const router = express.Router();
 
 router.post('/signup', authController.signup);
+router.post('/login', authController.login);
 
 router
-  .route('/api/v1/users')
+  .route('/')
   .get(userController.getAllUsers)
   .post(userController.createUser);
 router
-  .route('/api/v1/users/:id')
+  .route('/:id')
   .get(userController.getUser)
   .delete(userController.deleteUser);
 
