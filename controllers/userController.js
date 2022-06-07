@@ -16,8 +16,8 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
 });
 
 exports.getUser = (req, res) => {
-  const id = req.params.id * 1;
-  const tour = users.find((el) => el.id === id);
+  const id = req.params?.id * 1;
+  const tour = User.find((el) => el.id === id);
   // if (id > tours.length) {
   //   return res.status(404).json({
   //     status: "failed",
