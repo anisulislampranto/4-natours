@@ -103,7 +103,6 @@ const tourSchema = new mongoose.Schema(
         day: Number,
       },
     ],
-    // used for child referencing
     guides: [
       {
         type: mongoose.Schema.ObjectId,
@@ -153,6 +152,14 @@ tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
 
   this.start = Date.now();
+  next();
+});
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
   next();
 });
 
