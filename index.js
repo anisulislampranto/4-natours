@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 
 const AppError = require('./utils/appError');
 const tourRouter = require('./routes/tourRoutes');
@@ -10,23 +11,36 @@ const userRouter = require('./routes/userRoutes');
 const app = express();
 
 // global middleware
+// set security http headers
+app.use(helmet());
+
+// development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// limit request from same api
 const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 100,
   message: 'Too many request from this IP, please try again in an hour',
 });
-
 app.use('/api', limiter);
 
-app.use(express.json());
+// body parser, reading data from body into req.body
+app.use(
+  express.json({
+    limit: '10kb',
+  })
+);
+
+// serving static file
 app.use(express.static(`${__dirname}/public`));
 
+// test middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  // console.log(req.headers);
   next();
 });
 
