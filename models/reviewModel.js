@@ -1,5 +1,4 @@
 // review / rating / createdAt / ref to tour / ref to user
-
 const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema(
@@ -13,7 +12,7 @@ const reviewSchema = new mongoose.Schema(
       min: 1,
       max: 5,
     },
-    cheatedAt: {
+    createdAt: {
       type: Date,
       default: Date.now(),
     },
