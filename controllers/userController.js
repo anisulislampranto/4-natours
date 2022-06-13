@@ -1,7 +1,7 @@
-const fs = require('fs');
 const catchAsync = require('../utils/catchAsync');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
+const handlerFactory = require('./handlerFactory');
 
 const filterObj = (obj, ...alowedFeilds) => {
   const newObj = {};
@@ -97,15 +97,4 @@ exports.createUser = catchAsync(async (req, res) => {
   // });
 });
 
-exports.deleteUser = (req, res) => {
-  if (req.params.id > tours.length) {
-    return res.status(404).json({
-      status: 'failed delete',
-      message: 'Invalid Id',
-    });
-  }
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-};
+exports.deleteUser = handlerFactory.deleteOne(User);
