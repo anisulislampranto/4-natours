@@ -5,6 +5,7 @@ const authController = require('../controllers/authController');
 const router = express.Router({ mergeParams: true });
 
 //POST /tour/5777dhdka/reviews
+//GET /tour/5777dhdka/reviews
 //POST /reviews
 
 router
