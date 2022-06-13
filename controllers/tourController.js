@@ -1,7 +1,6 @@
-const { ObjectId } = require('mongodb');
 const Tour = require('../models/tourModel');
-const APIFeatures = require('../utils/apiFeatures');
-const AppError = require('../utils/appError');
+// const APIFeatures = require('../utils/apiFeatures');
+// const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const handlerFactory = require('./handlerFactory');
 
@@ -12,65 +11,8 @@ exports.aliasTopTours = (req, res, next) => {
   next();
 };
 
-exports.getAllTours = catchAsync(async (req, res, next) => {
-  // try {
-  // execute query
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .panginate();
-
-  const tours = await features.query;
-
-  //  mongoose filtering
-  // const query = Tour.find()
-  //   .where('duration')
-  //   .equals(5)
-  //   .where('difficulty')
-  //   .equals('easy');
-
-  // send query
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours,
-    },
-  });
-  // } catch (error) {
-  //   res.status(404).json({
-  //     status: 'failed',
-  //     message: 'Failed to fetch data',
-  //   });
-  // }
-});
-
-exports.getTour = catchAsync(async (req, res, next) => {
-  // try {
-  const tour = await Tour.findById({ _id: ObjectId(req.params.id) }).populate(
-    'reviews'
-  );
-  // Tour.findOne({ _id: req.params.id });
-
-  if (!tour) {
-    return next(new AppError('No tour Found with that ID', 404));
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-  // } catch (error) {
-  //   res.status(404).json({
-  //     status: 'failed',
-  //     message: 'failed to load single data',
-  //   });
-  // }
-});
-
+exports.getAllTours = handlerFactory.getAll(Tour);
+exports.getTour = handlerFactory.getOne(Tour, { path: 'reviews' });
 exports.createTour = handlerFactory.createOne(Tour);
 exports.updateTour = handlerFactory.updatOne(Tour);
 exports.deleteTour = handlerFactory.deleteOne(Tour);

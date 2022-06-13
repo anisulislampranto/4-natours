@@ -15,18 +15,6 @@ const filterObj = (obj, ...alowedFeilds) => {
   return newObj;
 };
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
-
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create Error if user POSTs password data
   if (req.body.password || req.body.confirmPassword) {
@@ -64,37 +52,16 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getUser = (req, res) => {
-  const id = req.params?.id * 1;
-  const tour = User.find((el) => el.id === id);
-  // if (id > tours.length) {
-  //   return res.status(404).json({
-  //     status: "failed",
-  //     message: "Invalid Id",
-  //   });
-  // }
-  if (!tour) {
-    return res.status(404).json({
-      status: 'failed',
-      message: 'Invalid Id',
-    });
-  }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
+exports.createUser = async (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not defined! Please use /signup instead',
   });
 };
 
-exports.createUser = catchAsync(async (req, res) => {
-  // const newUser = await User.create(req.body);
-  // res.status(201).json({
-  //   status: 'success',
-  //   data: {
-  //     tour: newUser,
-  //   },
-  // });
-});
+exports.getUser = handlerFactory.getOne(User);
+exports.getAllUsers = handlerFactory.getAll(User);
 
+// for admin // do not update password with this
+exports.updateUser = handlerFactory.updatOne(User);
 exports.deleteUser = handlerFactory.deleteOne(User);
