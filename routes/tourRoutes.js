@@ -1,11 +1,25 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController');
-const reviewController = require('../controllers/reviewController');
+const reviewRouter = require('./reviewRoutes');
 
 const router = express.Router();
 
 // router.param("id", tourController.checkID);
+
+//POST /tour/5777dhdka/reviews
+//GET /tour/5777dhdka/reviews
+//GET /tour/5777dhdka/reviews/768uhaj
+
+// router
+//   .route('/:tourId/reviews')
+//   .post(
+//     authController.protect,
+//     authController.restrictTo('user'),
+//     reviewController.createReview
+//   );
+
+router.use('/:tourId/reviews', reviewRouter);
 
 // TOURES
 router
@@ -27,18 +41,6 @@ router
     authController.protect,
     authController.restrictTo('admin'),
     tourController.deleteTour
-  );
-
-//POST /tour/5777dhdka/reviews
-//GET /tour/5777dhdka/reviews
-//GET /tour/5777dhdka/reviews/768uhaj
-
-router
-  .route('/:tourId/reviews')
-  .post(
-    authController.protect,
-    authController.restrictTo('user'),
-    reviewController.createReview
   );
 
 module.exports = router;
