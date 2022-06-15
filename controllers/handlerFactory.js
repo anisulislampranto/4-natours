@@ -77,6 +77,7 @@ exports.getAll = (Model) =>
       .limitFields()
       .panginate();
 
+    // const doc = await features.query.explain();
     const doc = await features.query;
     // send query
     res.status(200).json({
