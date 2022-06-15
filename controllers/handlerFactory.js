@@ -1,4 +1,3 @@
-const { ObjectId } = require('mongodb');
 const APIFeatures = require('../utils/apiFeatures');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
@@ -52,10 +51,6 @@ exports.getOne = (Model, popOptions) =>
     let query = Model.findById(req.params.id);
     if (popOptions) query = query.populate(popOptions);
     const doc = await query;
-
-    // const doc = await Model.findById({ _id: ObjectId(req.params.id) }).populate(
-    //   'reviews'
-    // );
 
     if (!doc) {
       return next(new AppError('No document Found with that ID', 404));

@@ -1,0 +1,75 @@
+You have an app with multiple collections: users, teams, 
+products (that can be bought on the platform), orders , payments, log entries 
+(get created for every login, signup, order, payment, etc), notifications. 
+Create a diagram showing how you would link them together,and explain why.
+////
+//
+/
+// we are using here parent referancing because logs can be infinite 
+// APP
+{
+    "_id":ObjectID('0'),
+    "app": "My application",
+}
+// parent referancing product because products can be many and it is not related to any user just admin can add update product so here we can say admin is app
+// and product info also don't need to be updated in a regular basis
+// PRODUCT
+{
+    "_id": ObjectID('89'),
+    // tracking log of product from app 
+    "app":ObjectID('0'),
+    "product": "Product",
+    "price": 876
+}
+// we are using Two way referancing here because and user can be aprt of many team and a team can have many member which is user
+// here we can see many to many relationhip
+// TEAM
+{
+    "_id": ObjectID('8'),
+    "team": "team Iron men",
+    // tracking log of team from app 
+    "app": ObjectID('0'),
+    "members": [
+        "_id":ObjectID('7')
+    ]
+},
+// USER 
+{
+    "_id":ObjectID('7'),
+    // tracking log of user from app 
+    "app": ObjectID('0'),
+    "user": "Tony Stark",
+    "teams": [
+        "_id": ObjectID('8')
+    ]
+}
+// using parent referancing here because that order is to just one user i mean One to many relation. 
+// we did not used child referencing because order can be infinite level. so it will exceed the BSON object limit of user object 
+// we did not used many to many because that perticuler order is from a perticular user so it is a one way referancing 
+// ORDER
+{
+    "_id": ObjectID('8'),
+    // tracking log of order and payment from app 
+    "app": ObjectID('0'),
+    "order": "black t-shirt",
+    "date": "04-04-2022",
+    "user": ObjectID('7')
+    // we are embeding payment with order based on closeness // order nad payment are meant to be with each other
+    // also it does not require regular updating 
+    "payment": {
+        "method": "paypal",
+        "price": 8766,
+        "status": "done"
+    }
+}
+// we are using parent referencing here because of 
+// NOTIFICATION
+{
+    "_id":ObjectID('4'),
+    // tracking log of notification from app 
+    "app":ObjectID('0'),
+    // that notification can be related to a perticuler to user 
+    // thats why we are referancing user here // also notification updates a lot  
+    "user": ObjectID('8'),
+    "user": "notification": "this is a notification",
+}
