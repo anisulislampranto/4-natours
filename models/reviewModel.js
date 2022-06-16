@@ -68,18 +68,43 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
     },
   ]);
 
-  await Tour.findByIdAndUpdate(tourId, {
-    ratingsQuantity: stats[0].nRating,
-    ratingsAverage: stats[0].avgRating,
-  });
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].nRating,
+      ratingsAverage: stats[0].avgRating,
+    });
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5,
+    });
+  }
 
   console.log(stats);
 };
 
 reviewSchema.post('save', function () {
   // this points to current review
-  this.constructor.calcAverageRatings(this.tour);
+  this.constructor?.calcAverageRatings(this.tour);
 });
+
+// findByIdAndUpdate
+// findByIdAndDelete
+reviewSchema.post(/^findOneAnd/, async function (docs) {
+  await docs?.constructor.calcAverageRatings(docs.tour);
+});
+
+// did not worked this code i don't know why
+// reviewSchema.pre(/^findByIdAnd/, async function (next) {
+//   this.review = await this.findOne();
+//   console.log(this.review);
+//   next();
+// });
+
+// reviewSchema.post(/^findByIdAnd/, async function (next) {
+//   // this.review = await this.findOne(); // does not work here, query has already executed
+//   await this.review.calcAverageRatings(this.review.tour);
+// });
 
 const Review = mongoose.model('Review', reviewSchema);
 
