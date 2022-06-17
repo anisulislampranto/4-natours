@@ -193,8 +193,19 @@ tourSchema.post(/^find/, function (doc, next) {
 // });
 
 // aggregation middleware
+// tourSchema.pre('aggregate', function (next) {
+//   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+//   console.log(this.pipeline);
+//   next();
+// });
+
 tourSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  // Hide secret tours if geoNear is NOT used
+  if (!(this.pipeline().length > 0 && '$geoNear' in this.pipeline()[0])) {
+    this.pipeline().unshift({
+      $match: { secretTour: { $ne: true } },
+    });
+  }
   next();
 });
 
