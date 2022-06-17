@@ -55,28 +55,28 @@ userSchema.pre(/^find/, function (next) {
   next();
 });
 
-// userSchema.pre('save', async function (next) {
-//   // Only Runs this function if passwords was actually modified
-//   if (!this.isModified('password')) {
-//     next();
-//   } else {
-//     // Hash the password with cost 12
-//     this.password = await bcrypt.hash(this.password, 12);
+userSchema.pre('save', async function (next) {
+  // Only Runs this function if passwords was actually modified
+  if (!this.isModified('password')) {
+    next();
+  } else {
+    // Hash the password with cost 12
+    this.password = await bcrypt.hash(this.password, 12);
 
-//     // delete confirmPassword field
-//     this.confirmPassword = undefined;
-//     next();
-//   }
-// });
+    // delete confirmPassword field
+    this.confirmPassword = undefined;
+    next();
+  }
+});
 
-// userSchema.pre('save', function (next) {
-//   if (!this.isModified('password') || this.isNew) {
-//     return next();
-//   }
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) {
+    return next();
+  }
 
-//   this.passwordChangedAt = Date.now();
-//   next();
-// });
+  this.passwordChangedAt = Date.now();
+  next();
+});
 
 userSchema.methods.correctPassword = async function (
   candidatePassword,
