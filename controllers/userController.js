@@ -1,22 +1,25 @@
 const multer = require('multer');
+const sharp = require('sharp');
 const catchAsync = require('../utils/catchAsync');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const handlerFactory = require('./handlerFactory');
 
 // a complete defination of how we want to store our files with the destination and the filename
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    // first arg is an error if there is one is not then just null
-    // second arg is the actual destination
-    cb(null, 'public/img/users');
-  },
-  filename: (req, file, cb) => {
-    // user-68767kah87-875756687.jpg
-    const ext = file.mimetype.split('/')[1];
-    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
-  },
-});
+// const multerStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     // first arg is an error if there is one is not then just null
+//     // second arg is the actual destination
+//     cb(null, 'public/img/users');
+//   },
+//   filename: (req, file, cb) => {
+//     // user-68767kah87-875756687.jpg
+//     const ext = file.mimetype.split('/')[1];
+//     cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+//   },
+// });
+
+const multerStorage = multer.memoryStorage();
 
 // in this function, the goal is basically to test if the uploaded file is an image
 // if it is so then we pass true into the above cb funtion line:17
@@ -36,6 +39,23 @@ const upload = multer({
 });
 
 exports.uploadUserPhoto = upload.single('photo');
+
+// it will run right after the photo is uploaded and that upload is now heppening to a buffer and
+// no longer directly to the file system. so thats why we used memory storage line:22
+// resizing the image from memory and then storing it to diskstorage
+// note: if you do not need image proccesing then use line:8-line:20 method
+exports.resizeUserPhoto = (req, res, next) => {
+  if (!req.file) return next();
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+
+  sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.filename}`);
+
+  next();
+};
 
 const filterObj = (obj, ...alowedFeilds) => {
   const newObj = {};
