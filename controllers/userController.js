@@ -44,18 +44,18 @@ exports.uploadUserPhoto = upload.single('photo');
 // no longer directly to the file system. so thats why we used memory storage line:22
 // resizing the image from memory and then storing it to diskstorage
 // note: if you do not need image proccesing then use line:8-line:20 method
-exports.resizeUserPhoto = (req, res, next) => {
+exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
-  sharp(req.file.buffer)
+  await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
     .toFile(`public/img/users/${req.file.filename}`);
 
   next();
-};
+});
 
 const filterObj = (obj, ...alowedFeilds) => {
   const newObj = {};
