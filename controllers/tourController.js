@@ -1,9 +1,45 @@
+const multer = require('multer');
+const sharp = require('sharp');
 const Tour = require('../models/tourModel');
 const AppError = require('../utils/appError');
 // const APIFeatures = require('../utils/apiFeatures');
 // const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const handlerFactory = require('./handlerFactory');
+
+const multerStorage = multer.memoryStorage();
+
+// in this function, the goal is basically to test if the uploaded file is an image
+// if it is so then we pass true into the above cb funtion line:17
+// if it is not then we pass false into the callback function along with an error
+// note: its not only for images its for all kinds of file depands on the application you are making
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image! Pleae upload only images', 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+exports.uploadTourImages = upload.fields([
+  { name: 'imageCover', maxCount: 1 },
+  { name: 'images', maxCount: 3 },
+]);
+
+// // for single image
+// upload.single('image'); req.file
+// // multiple image with the same name
+// upload.array('image', 3); req.files
+
+exports.resizeTourImages = (req, res, next) => {
+  console.log(req.files);
+  next();
+};
 
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
