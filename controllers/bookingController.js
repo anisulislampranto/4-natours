@@ -15,7 +15,9 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     payment_method_types: ['card'],
     // this url will get called as soon as a credit card has been successfully charged
     // so as soon the as the purchase is successfull the user will be redirected to this url
-    success_url: `${req.protocol}://${req.get('host')}/ `,
+    success_url: `${req.protocol}://${req.get('host')}/?tour=${
+      req.params.tourId
+    }&user=${req.user.id}&price=${tour.price}`,
     cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug} `,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
@@ -41,3 +43,11 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     session,
   });
 });
+
+exports.createBookingCheckout = (req, res, next) => {
+  const { tour, user, price } = req.query;
+
+  if (!tour && !user && !price) {
+    next();
+  }
+};
