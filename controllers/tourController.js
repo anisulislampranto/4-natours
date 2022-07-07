@@ -65,7 +65,7 @@ exports.resizeTourImages = catchAsync(async (req, res, next) => {
         .toFile(`public/img/tours/${filename}`);
 
       req.body.images.push(filename);
-    })
+    }),
   );
 
   next();
@@ -190,8 +190,8 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
     next(
       new AppError(
         'Please Provide Latitute and longitute in the formate lat,lng',
-        400
-      )
+        400,
+      ),
     );
   }
 
