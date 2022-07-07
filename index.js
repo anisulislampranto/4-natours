@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const path = require('path');
 
 const AppError = require('./utils/appError');
 const tourRouter = require('./routes/tourRoutes');
@@ -14,6 +15,12 @@ const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
 
 const app = express();
+
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
+// serving static file
+app.use(express.static(path.join(__dirname, 'public')));
 
 // global middleware
 // set security http headers
@@ -55,9 +62,6 @@ app.use(
   })
 );
 
-// serving static file
-app.use(express.static(`${__dirname}/public`));
-
 // test middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
@@ -66,10 +70,9 @@ app.use((req, res, next) => {
 });
 
 // (3) ROUTES
-// app.get("/api/v1/tours", getAllTours);
-// app.post("/api/v1/tours", createTour);
-// app.get("/api/v1/tours/:id", getTour);
-// app.delete("/api/v1/tours/:id", deleteTour);
+app.get('/', (req, res) => {
+  res.status(200).render('base');
+});
 
 // CREATING ROUTER
 
